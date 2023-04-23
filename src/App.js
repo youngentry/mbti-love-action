@@ -207,7 +207,7 @@ function App() {
                 <span className="userName"> {authorDisplayName}</span>
                 <span className="updatedAt">{updatedAt}</span>
                 <span className="copy" onClick={() => handleCopyClick(textDisplay, index)}>
-                  댓글 복사하기
+                  댓글 복사하기 COPY
                 </span>
                 {isCopySuccess && copyIndex === index && <span className="copySuccess">댓글이 복사되었습니다.</span>}
               </div>
@@ -219,7 +219,7 @@ function App() {
                 <p className="text">
                   <pre className="shortText">{textDisplay}</pre>
                   <span className="showAllText" onClick={() => handleShowAll(index)}>
-                    자세히 보기
+                    자세히 보기 Show more
                   </span>
                 </p>
               )}
