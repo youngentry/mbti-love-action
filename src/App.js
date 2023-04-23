@@ -147,7 +147,7 @@ function App() {
           </div>
         ) : (
           <div className="transparentButton" onClick={() => setIsTopTransparent(!isTopTransparent)}>
-            메뉴 숨기기 (made by gentry_@naver.com)
+            <span className="hideMenu">메뉴 숨기기 Hide menu</span> <span className="made"> (made by gentry_@naver.com)</span>
           </div>
         )}
         <iframe

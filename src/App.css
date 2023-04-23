@@ -227,3 +227,13 @@ body {
 .copySuccess {
   font-size: 13px;
 }
+
+.made {
+  font-size: 10px;
+  font-weight: 100;
+  color: #ddd;
+}
+
+.hideMenu {
+  margin-right: 5px;
+}
