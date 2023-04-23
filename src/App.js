@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import axios from "axios";
+import he from "he";
 
 function App() {
   const [comments, setComments] = useState([]);
@@ -39,7 +40,13 @@ function App() {
 
   useEffect(() => {
     (async () => {
-      setComments(await getAllComments("jqvCCJ25LiY"));
+      const commentsBeforeRefine = await getAllComments("jqvCCJ25LiY");
+      setComments(commentsBeforeRefine);
+      commentsBeforeRefine.map((comment) => {
+        const { textDisplay, likeCount, updatedAt, authorDisplayName } = comment.snippet.topLevelComment.snippet;
+        console.log(he.decode(textDisplay));
+        return;
+      });
     })();
   }, []);
   return (
