@@ -29,7 +29,7 @@ function App() {
         const response = await axios.get("https://www.googleapis.com/youtube/v3/commentThreads", { params });
         comments = [...comments, ...response.data.items];
         nextPageToken = response.data.nextPageToken || null;
-      } while (nextPageToken && comments.length < 50);
+      } while (nextPageToken && comments.length < 200);
 
       return comments;
     } catch (error) {
@@ -38,17 +38,29 @@ function App() {
     }
   };
 
+  const mbitArray = ["ENFJ", "ENTJ", "ENFP", "ENTP", "ESFP", "ESFJ", "ESTP", "ESTJ", "INFP", "INFJ", "INTP", "ISTP", "ISFP", "ISFJ", "ISTJ", "INTJ"];
+
   useEffect(() => {
     (async () => {
       const commentsBeforeRefine = await getAllComments("jqvCCJ25LiY");
-      setComments(commentsBeforeRefine);
-      commentsBeforeRefine.map((comment) => {
-        const { textDisplay, likeCount, updatedAt, authorDisplayName } = comment.snippet.topLevelComment.snippet;
-        console.log(he.decode(textDisplay));
-        return;
+      const refinedComments = commentsBeforeRefine.map((comment) => {
+        let { textDisplay, likeCount, updatedAt, authorDisplayName } = comment.snippet.topLevelComment.snippet;
+        textDisplay = he.decode(textDisplay).replaceAll("<br>", "\n");
+
+        const [firstLine, message] = textDisplay.split("\n");
+
+        for (let i = 0; i < mbitArray.length; i++) {
+          if (firstLine.includes(mbitArray[i].toUpperCase())) {
+            return { textDisplay, likeCount, updatedAt, authorDisplayName, mbti: mbitArray[i] };
+          }
+        }
+        return false;
       });
+      const filteredComments = refinedComments.filter((comment) => comment !== false);
+      setComments(filteredComments);
     })();
   }, []);
+
   return (
     <div className="App">
       <iframe
@@ -63,14 +75,17 @@ function App() {
 
       {comments.length &&
         comments.map((comment) => {
-          const { textDisplay, likeCount, updatedAt, authorDisplayName } = comment.snippet.topLevelComment.snippet;
+          console.log(comment);
+          const { textDisplay, likeCount, updatedAt, authorDisplayName } = comment;
           return (
             <div>
               <div>{authorDisplayName}</div>
-              <p>{textDisplay}</p>
+              <p>
+                <pre>{textDisplay}</pre>
+              </p>
               <div>
-                <span>{likeCount}</span>
-                <span>{updatedAt}</span>
+                <span>Like:{likeCount}</span>
+                <span>Date:{updatedAt}</span>
               </div>
             </div>
           );
