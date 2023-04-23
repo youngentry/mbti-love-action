@@ -96,14 +96,13 @@ function App() {
     setSelectedMbti([...selectedMbti, mbti]);
   };
 
-  const findVideo = async (videoId) => {
+  const findVideoComments = async (videoId) => {
     const commentsBeforeRefine = await getAllComments(videoId);
     const refinedComments = commentsBeforeRefine.map((comment) => {
       let { textDisplay, likeCount, updatedAt, authorDisplayName } = comment.snippet.topLevelComment.snippet;
       textDisplay = he.decode(textDisplay).replaceAll("<br>", "\n");
       updatedAt = getRelativeTime(updatedAt);
       const [firstLine, message] = textDisplay.split("\n");
-
       for (let i = 0; i < mbitArray.length; i++) {
         if (firstLine.includes(mbitArray[i].toUpperCase())) {
           return { textDisplay, likeCount, updatedAt, authorDisplayName, mbti: mbitArray[i], isShow: false };
@@ -125,7 +124,7 @@ function App() {
 
   useEffect(() => {
     (async () => {
-      findVideo(videoId);
+      findVideoComments(videoId);
     })();
   }, [videoId]);
 
@@ -167,9 +166,8 @@ function App() {
             <div className="searchOpen" onClick={() => setIsSearchVisible(false)}>
               검색 창 접어두기
             </div>
-            <img className="searchExample" src={`${process.env.PUBLIC_URL}example.png`} alt="" />
             <form className="searchForm" action="" onSubmit={handleSearchSubmit}>
-              <input className="searchInput" type="text" onChange={handleInputChange} value={searchInput} placeholder="ex) jqvCCJ25LiY" required />
+              <input className="searchInput" type="text" onChange={handleInputChange} value={searchInput} placeholder="Video ID ex) jqvCCJ25LiY" required />
               <button className="searchButton">검색</button>
             </form>
             <ul>
