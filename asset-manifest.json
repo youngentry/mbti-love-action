@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/mbti-love-action/static/css/main.52ac2470.css",
+    "main.js": "/mbti-love-action/static/js/main.9b9dde32.js",
+    "index.html": "/mbti-love-action/index.html",
+    "main.52ac2470.css.map": "/mbti-love-action/static/css/main.52ac2470.css.map",
+    "main.9b9dde32.js.map": "/mbti-love-action/static/js/main.9b9dde32.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.52ac2470.css",
+    "static/js/main.9b9dde32.js"
+  ]
+}
