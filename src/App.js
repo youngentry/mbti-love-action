@@ -39,7 +39,7 @@ const getAllComments = async (videoId) => {
       const response = await axios.get("https://www.googleapis.com/youtube/v3/commentThreads", { params });
       comments = [...comments, ...response.data.items];
       nextPageToken = response.data.nextPageToken || null;
-    } while (nextPageToken && comments.length < 500);
+    } while (nextPageToken && comments.length < 1600);
     return comments;
   } catch (error) {
     console.error(error, "getPlaylistItems error");
