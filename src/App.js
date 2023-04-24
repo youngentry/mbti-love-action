@@ -8,12 +8,12 @@ export const getRelativeTime = (publishedAt) => {
   const now = Date.now();
   const difference = now - time.getTime();
 
-  if (difference < 1000 * 60 * 60) return `${Math.floor(difference / (1000 * 60))}분 전`;
-  if (difference < 1000 * 60 * 60 * 24) return `${Math.floor(difference / (1000 * 60 * 60))}시간 전`;
-  if (difference < 1000 * 60 * 60 * 24 * 7) return `${Math.floor(difference / (1000 * 60 * 60 * 24))}일 전`;
-  if (difference < 1000 * 60 * 60 * 24 * 30) return `${Math.floor(difference / (1000 * 60 * 60 * 24 * 7))}주 전`;
-  if (difference < 1000 * 60 * 60 * 24 * 365) return `${Math.floor(difference / (1000 * 60 * 60 * 24 * 30))}달 전`;
-  return `${Math.floor(difference / (1000 * 60 * 60 * 24 * 30 * 365)) + 1}년 전`;
+  if (difference < 1000 * 60 * 60) return `${Math.floor(difference / (1000 * 60))} Minute ago`;
+  if (difference < 1000 * 60 * 60 * 24) return `${Math.floor(difference / (1000 * 60 * 60))} Hour ago`;
+  if (difference < 1000 * 60 * 60 * 24 * 7) return `${Math.floor(difference / (1000 * 60 * 60 * 24))} Day ago`;
+  if (difference < 1000 * 60 * 60 * 24 * 30) return `${Math.floor(difference / (1000 * 60 * 60 * 24 * 7))} Week ago`;
+  if (difference < 1000 * 60 * 60 * 24 * 365) return `${Math.floor(difference / (1000 * 60 * 60 * 24 * 30))} Month ago`;
+  return `${Math.floor(difference / (1000 * 60 * 60 * 24 * 30 * 365)) + 1} Year ago`;
 };
 
 /**
@@ -72,7 +72,13 @@ function App() {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    setVideoId(searchInput);
+    console.log(searchInput.slice(0, 17));
+    if (searchInput.slice(0, 32) === "https://www.youtube.com/watch?v=") {
+      return setVideoId(searchInput.slice(32, 43));
+    }
+    if (searchInput.slice(0, 17) === "https://youtu.be/") {
+      return setVideoId(searchInput.slice(17, 28));
+    }
   };
 
   const handleShowAll = (index) => {
@@ -137,55 +143,45 @@ function App() {
     }
     return () => clearTimeout(timeoutId);
   }, [isCopySuccess]);
+  console.log("https://www.youtube.com/watch?v=".length);
 
   return (
     <div className="App">
-      <div className={`top ${isTopTransparent && "transparent"}`}>
-        {isTopTransparent ? (
-          <div className="transparentButton" onClick={() => setIsTopTransparent(!isTopTransparent)}>
-            메뉴 열기
-          </div>
-        ) : (
-          <div className="transparentButton" onClick={() => setIsTopTransparent(!isTopTransparent)}>
-            <span className="hideMenu">메뉴 숨기기 Hide menu</span> <span className="made"> (made by gentry_@naver.com)</span>
-          </div>
-        )}
+      <div className={`top`}>
         <iframe
-          className="video"
+          className={`video ${isTopTransparent && "transparent"}`}
           width="100%"
           height="120"
-          src={`https://www.youtube.com/embed/${"jqvCCJ25LiY"}`}
+          src={`https://www.youtube.com/embed/${videoId}`}
           title="MBTI별 짝사랑 상대에게 하는 행동"
           frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowfullscreen
         ></iframe>
-
         {isSearchVisible ? (
-          <div className="search">
+          <div className={`search ${isTopTransparent && "transparent"}`}>
             <div className="searchOpen" onClick={() => setIsSearchVisible(false)}>
-              검색 창 접어두기
+              Fold Search Menu
             </div>
             <form className="searchForm" action="" onSubmit={handleSearchSubmit}>
-              <input className="searchInput" type="text" onChange={handleInputChange} value={searchInput} placeholder="Video ID ex) jqvCCJ25LiY" required />
-              <button className="searchButton">검색</button>
+              <input className="searchInput" type="text" onChange={handleInputChange} value={searchInput} placeholder="유튜브 동영상 주소 URL" required />
+              <button className="searchButton">Search</button>
             </form>
             <ul>
               {videoList.map((video) => {
                 return (
                   <li className={`videoList ${video.id === videoId && "display"}`} onClick={() => setVideoId(video.id)}>
-                    {video.id} - {video.title}
+                    {video.title}
                   </li>
                 );
               })}
             </ul>
           </div>
         ) : (
-          <div className="searchOpen" onClick={() => setIsSearchVisible(true)}>
-            다른 MBTI 영상 댓글 검색하기🔎
+          <div className={`searchOpen ${isTopTransparent && "transparent"}`} onClick={() => setIsSearchVisible(true)}>
+            Search Video🔎
           </div>
         )}
-
         <div className="property">
           {mbitArray.map((mbti) => {
             return (
@@ -195,6 +191,15 @@ function App() {
             );
           })}
         </div>
+        {isTopTransparent ? (
+          <div className="transparentButton" onClick={() => setIsTopTransparent(!isTopTransparent)}>
+            Open menu
+          </div>
+        ) : (
+          <div className="transparentButton" onClick={() => setIsTopTransparent(!isTopTransparent)}>
+            <span className="hideMenu">Hide menu</span> <span className="made"> (made by gentry_@naver.com)</span>
+          </div>
+        )}
       </div>
 
       {selectedMbti.length ? (
@@ -207,7 +212,7 @@ function App() {
                 <span className="userName"> {authorDisplayName}</span>
                 <span className="updatedAt">{updatedAt}</span>
                 <span className="copy" onClick={() => handleCopyClick(textDisplay, index)}>
-                  댓글 복사하기 COPY
+                  COPY
                 </span>
                 {isCopySuccess && copyIndex === index && <span className="copySuccess">댓글이 복사되었습니다.</span>}
               </div>
@@ -219,12 +224,14 @@ function App() {
                 <p className="text">
                   <pre className="shortText">{textDisplay}</pre>
                   <span className="showAllText" onClick={() => handleShowAll(index)}>
-                    자세히 보기 Show more
+                    Show more
                   </span>
                 </p>
               )}
               <div>
-                <span className="likeHit">Like: {likeCount}</span>
+                <p className="likeHit">
+                  Like: <span className="likeCount">{likeCount}</span>
+                </p>
               </div>
             </div>
           ) : null;
